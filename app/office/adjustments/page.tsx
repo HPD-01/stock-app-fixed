@@ -5,7 +5,7 @@ import { createServerClient } from "@supabase/ssr";
 type SP = { item_id?: string };
 
 async function createSupabaseServerClient() {
-  const cookieStore = (await cookies()) as any;
+  const cookieStore = cookies() as any;
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,9 +15,7 @@ async function createSupabaseServerClient() {
         getAll() {
           return cookieStore.getAll?.() ?? [];
         },
-        setAll(cookiesToSet) {
-          // In Server Components this can be readonly in some Next versions.
-          // Supabase only needs this when it tries to refresh session cookies.
+        setAll(cookiesToSet: any[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set?.(name, value, options);
@@ -31,7 +29,11 @@ async function createSupabaseServerClient() {
   );
 }
 
-export default async function Page({ searchParams }: { searchParams?: SP }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { item_id?: string };
+}) {
   const initialItemId = searchParams?.item_id ?? "";
 
   const supabase = await createSupabaseServerClient();
