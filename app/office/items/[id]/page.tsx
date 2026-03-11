@@ -12,10 +12,11 @@ type ItemRow = {
 export default async function ItemDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id: itemId } = await params;
+
   const supabase = await createClient();
-  const itemId = params.id;
 
   // Who am I?
   const userRes = await supabase.auth.getUser();
