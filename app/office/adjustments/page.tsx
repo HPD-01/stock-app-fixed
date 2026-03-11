@@ -32,10 +32,10 @@ async function createSupabaseServerClient() {
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: Promise<{ item_id?: string }>;
 }) {
-  const initialItemId =
-    typeof searchParams?.item_id === "string" ? searchParams.item_id : "";
+  const sp = searchParams ? await searchParams : undefined;
+  const initialItemId = sp?.item_id ?? "";
 
   const supabase = await createSupabaseServerClient();
 
