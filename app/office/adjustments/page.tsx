@@ -31,9 +31,8 @@ async function createSupabaseServerClient() {
   );
 }
 
-export default async function Page(props: { searchParams: SP | Promise<SP> }) {
-  const sp = await props.searchParams;
-  const initialItemId = sp?.item_id ?? "";
+export default async function Page({ searchParams }: { searchParams?: SP }) {
+  const initialItemId = searchParams?.item_id ?? "";
 
   const supabase = await createSupabaseServerClient();
 
