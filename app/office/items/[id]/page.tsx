@@ -31,7 +31,6 @@ export default async function ItemDetailPage({
 
   const item = itemRes.data ?? null;
 
-  // DEBUG SCREEN (always shows useful info)
   if (!item) {
     return (
       <div className="space-y-4 rounded-lg border bg-white p-6">
@@ -61,13 +60,16 @@ export default async function ItemDetailPage({
     );
   }
 
-  // If item is found, show it simply (for now)
   return (
     <div className="space-y-4 rounded-lg border bg-white p-6">
       <h1 className="text-xl font-semibold">
         {item.name} <span className="text-gray-500">({item.sku})</span>
       </h1>
-      <p className="text-sm text-gray-600">Category: {item.category ?? "—"}</p>
+
+      <p className="text-sm text-gray-600">
+        Category: {item.category ?? "—"}
+      </p>
+
       <p className="text-sm text-gray-600">
         Reorder threshold: {item.reorder_threshold}
       </p>
