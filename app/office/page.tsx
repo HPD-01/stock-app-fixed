@@ -82,22 +82,82 @@ export default async function OfficePage() {
         {lowStock.length === 0 ? (
           <p>All items are above threshold.</p>
         ) : (
-          <table style={{ width: "100%" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                minWidth: 600,
+                borderCollapse: "collapse",
+              }}
+            >
+              <thead>
+                <tr>
+                  <th align="left">SKU</th>
+                  <th align="left">Name</th>
+                  <th align="left">Current quantity</th>
+                  <th align="left">Reorder threshold</th>
+                  <th align="left">Status</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {lowStock.map((r) => (
+                  <tr key={r.item.id}>
+                    <td>{r.item.sku}</td>
+                    <td>{r.item.name}</td>
+                    <td>{r.qty}</td>
+                    <td>{r.threshold}</td>
+                    <td>
+                      <span
+                        style={{
+                          background: r.status.bg,
+                          color: r.status.fg,
+                          padding: "2px 8px",
+                          borderRadius: 999,
+                          fontSize: 12,
+                        }}
+                      >
+                        {r.status.label}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* FULL STOCK TABLE */}
+
+      <div style={{ border: "1px solid #ddd", padding: 12 }}>
+        <h2>Stock</h2>
+
+        <div style={{ overflowX: "auto" }}>
+          <table
+            style={{
+              width: "100%",
+              minWidth: 650,
+              borderCollapse: "collapse",
+            }}
+          >
             <thead>
               <tr>
                 <th align="left">SKU</th>
                 <th align="left">Name</th>
-                <th align="left">Current quantity</th>
-                <th align="left">Reorder threshold</th>
+                <th align="left">Category</th>
+                <th align="left">Quantity</th>
+                <th align="left">Threshold</th>
                 <th align="left">Status</th>
               </tr>
             </thead>
 
             <tbody>
-              {lowStock.map((r) => (
+              {rows.map((r) => (
                 <tr key={r.item.id}>
                   <td>{r.item.sku}</td>
                   <td>{r.item.name}</td>
+                  <td>{r.item.category}</td>
                   <td>{r.qty}</td>
                   <td>{r.threshold}</td>
                   <td>
@@ -117,51 +177,7 @@ export default async function OfficePage() {
               ))}
             </tbody>
           </table>
-        )}
-      </div>
-
-      {/* FULL STOCK TABLE */}
-
-      <div style={{ border: "1px solid #ddd", padding: 12 }}>
-        <h2>Stock</h2>
-
-        <table style={{ width: "100%" }}>
-          <thead>
-            <tr>
-              <th align="left">SKU</th>
-              <th align="left">Name</th>
-              <th align="left">Category</th>
-              <th align="left">Quantity</th>
-              <th align="left">Threshold</th>
-              <th align="left">Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.item.id}>
-                <td>{r.item.sku}</td>
-                <td>{r.item.name}</td>
-                <td>{r.item.category}</td>
-                <td>{r.qty}</td>
-                <td>{r.threshold}</td>
-                <td>
-                  <span
-                    style={{
-                      background: r.status.bg,
-                      color: r.status.fg,
-                      padding: "2px 8px",
-                      borderRadius: 999,
-                      fontSize: 12,
-                    }}
-                  >
-                    {r.status.label}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </div>
       </div>
     </div>
   );

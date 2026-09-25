@@ -35,23 +35,18 @@ export default async function MovementsPage({
     .limit(500);
 
   const rows: Movement[] = movements ?? [];
-  const itemIds = [
-  ...new Set(
-    rows
-      .map((m) => m.item_id)
-      .filter(Boolean)
-  ),
-];
 
-const { data: items } = itemIds.length
-  ? await supabase
-      .from("items")
-      .select("id, name")
-      .in("id", itemIds as any)
-  : { data: [] };
+  const itemIds = [...new Set(rows.map((m) => m.item_id).filter(Boolean))];
 
-const itemMap = new Map();
-items?.forEach((i: any) => itemMap.set(i.id, i.name));
+  const { data: items } = itemIds.length
+    ? await supabase
+        .from("items")
+        .select("id, name")
+        .in("id", itemIds as any)
+    : { data: [] };
+
+  const itemMap = new Map();
+  items?.forEach((i: any) => itemMap.set(i.id, i.name));
 
   const issueIds = [
     ...new Set(
@@ -196,38 +191,51 @@ items?.forEach((i: any) => itemMap.set(i.id, i.name));
         </a>
       </div>
 
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-           <th align="left">When</th>
-<th align="left">Item</th>
-<th align="left">Job #</th>
-<th align="left">Issued To</th>
-<th align="left">Issued By</th>
-<th align="left">Amount</th>
-<th align="left">Source</th>
-<th align="left">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((m) => {
-            const issue = resolveIssue(m);
+      {/* MOBILE FIX */}
+      <div style={{ overflowX: "auto" }}>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            minWidth: 750,
+          }}
+        >
+          <thead>
+            <tr>
+              <th align="left">When</th>
+              <th align="left">Item</th>
+              <th align="left">Job #</th>
+              <th align="left">Issued To</th>
+              <th align="left">Issued By</th>
+              <th align="left">Amount</th>
+              <th align="left">Source</th>
+              <th align="left">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((m) => {
+              const issue = resolveIssue(m);
 
-            return (
-              <tr key={m.id}>
-                <td>{new Date(m.created_at).toLocaleString()}</td>
-                <td>{itemMap.get(m.item_id) ?? "—"}</td>
-<td>{issue?.job_number ?? "—"}</td>
-<td>{issue?.employee_name ?? "—"}</td>
-<td>{issuedBy(m)}</td>
-<td>{m.delta}</td>
-<td>{m.source}</td>
-<td>{m.source === "issue" ? issue?.notes ?? "—" : m.note ?? "—"}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              return (
+                <tr key={m.id}>
+                  <td>{new Date(m.created_at).toLocaleString()}</td>
+                  <td>{itemMap.get(m.item_id) ?? "—"}</td>
+                  <td>{issue?.job_number ?? "—"}</td>
+                  <td>{issue?.employee_name ?? "—"}</td>
+                  <td>{issuedBy(m)}</td>
+                  <td>{m.delta}</td>
+                  <td>{m.source}</td>
+                  <td>
+                    {m.source === "issue"
+                      ? issue?.notes ?? "—"
+                      : m.note ?? "—"}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
